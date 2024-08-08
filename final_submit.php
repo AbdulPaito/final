@@ -80,8 +80,8 @@ $classification = isset($_SESSION['classification']) ? (is_array($_SESSION['clas
 $disability = isset($_SESSION['disability']) ? (is_array($_SESSION['disability']) ? implode(', ', $_SESSION['disability']) : $_SESSION['disability']) : '';
 $cause_of_disability = isset($_SESSION['cause_of_disability']) ? (is_array($_SESSION['cause_of_disability']) ? implode(', ', $_SESSION['cause_of_disability']) : $_SESSION['cause_of_disability']) : '';
 $taken_ncae = isset($_SESSION['taken_ncae']) ? $conn->real_escape_string($_SESSION['taken_ncae']) : '';
-$where_ncae = isset($_SESSION['where_ncae']) ? $conn->real_escape_string($_SESSION['where_ncae']) : '';
-$when_ncae = isset($_SESSION['when_ncae']) ? $conn->real_escape_string($_SESSION['when_ncae']) : '';
+$where = isset($_SESSION['where']) ? $conn->real_escape_string($_SESSION['where']) : '';
+$when = isset($_SESSION['when']) ? $conn->real_escape_string($_SESSION['when']) : '';
 $qualification = isset($_SESSION['qualification']) ? $conn->real_escape_string($_SESSION['qualification']) : '';
 $scholarship = isset($_SESSION['scholarship']) ? $conn->real_escape_string($_SESSION['scholarship']) : '';
 $privacy_disclaimer = isset($_SESSION['privacy_disclaimer']) ? $conn->real_escape_string($_SESSION['privacy_disclaimer']) : '';
@@ -180,8 +180,8 @@ $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssss",
     $disability, 
     $cause_of_disability, 
     $taken_ncae, 
-    $where_ncae, 
-    $when_ncae, 
+    $where,
+    $when, 
     $qualification, 
     $scholarship, 
     $privacy_disclaimer, 
@@ -205,4 +205,10 @@ if ($stmt->execute()) {
 // Close connections
 $stmt->close();
 $conn->close();
+
+
+
+// Clear session data
+session_unset(); // Unset all session variables
+session_destroy(); // Destroy the session
 ?>
