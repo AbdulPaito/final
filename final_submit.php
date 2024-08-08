@@ -1,5 +1,4 @@
 <?php
-
 // Database connection
 $servername = "localhost";
 $username = "your_db_username";
@@ -20,20 +19,30 @@ $user = isset($_SESSION['username']) ? $conn->real_escape_string($_SESSION['user
 
 // Handle file uploads
 $upload_dir = 'Upload-image/';
-$profile_image_path = '';
-$imageUpload_path = '';
+$profile_image = '';
+$imageUpload = '';
+
+if (isset($_SESSION['profile_image'])) {
+    $profile_image = $_SESSION['profile_image'];
+}
 
 if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == 0) {
-    $profile_image_path = $upload_dir . basename($_FILES['profile_image']['name']);
-    if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $profile_image_path)) {
-        die("Error uploading profile image.");
+    $profile_image = $upload_dir . basename($_FILES['profile_image']['name']);
+    if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $profile_image)) {
+        echo "Error uploading image.";
+        exit;
     }
 }
 
+if (isset($_SESSION['imageUpload'])) {
+    $imageUpload = $_SESSION['imageUpload'];
+}
+
 if (isset($_FILES['imageUpload']) && $_FILES['imageUpload']['error'] == 0) {
-    $imageUpload_path = $upload_dir . basename($_FILES['imageUpload']['name']);
-    if (!move_uploaded_file($_FILES['imageUpload']['tmp_name'], $imageUpload_path)) {
-        die("Error uploading image.");
+    $imageUpload = $upload_dir . basename($_FILES['imageUpload']['name']);
+    if (!move_uploaded_file($_FILES['imageUpload']['tmp_name'], $imageUpload)) {
+        echo "Error uploading image.";
+        exit;
     }
 }
 
@@ -80,6 +89,8 @@ $applicant_signature = isset($_POST['applicant_signature']) ? $conn->real_escape
 $date_accomplished = isset($_POST['date_accomplished']) ? $conn->real_escape_string($_POST['date_accomplished']) : '';
 $registrar_signature = isset($_POST['registrar_signature']) ? $conn->real_escape_string($_POST['registrar_signature']) : '';
 $date_received = isset($_POST['date_received']) ? $conn->real_escape_string($_POST['date_received']) : '';
+$status = ''; // Add default value or update as needed
+$registration_complete = ''; // Add default value or update as needed
 
 // Prepare SQL statement to update form data into the database
 $sql = "UPDATE users SET 
@@ -137,7 +148,7 @@ if (!$stmt) {
 
 // Bind parameters (all are strings except for file paths which are also strings)
 $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssss", 
-    $profile_image_path, 
+    $profile_image, 
     $uli_number, 
     $entry_date, 
     $last_name, 
@@ -178,19 +189,20 @@ $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssss",
     $date_accomplished, 
     $registrar_signature, 
     $date_received, 
-    $imageUpload_path, 
+    $imageUpload, 
     $status, 
     $registration_complete, 
-    $user);
+    $user
+);
 
 // Execute the statement
 if ($stmt->execute()) {
-    echo "Record updated successfully";
+    echo "Form data updated successfully.";
 } else {
-    echo "Error updating record: " . $stmt->error;
+    echo "Error updating form data: " . $stmt->error;
 }
 
-// Close the statement and connection
+// Close connections
 $stmt->close();
 $conn->close();
 ?>
