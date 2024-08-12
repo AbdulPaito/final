@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: gray; /* Default background color */
+  font-family: 'Quicksand', sans-serif;
+  background-image: url('exact.jpg'); /* Background image URL */
+  background-size: 100% 100%; /* Adjust background size */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Do not repeat the background image */
+}
+
+section {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+
+
+/* Add this CSS for positioning */
+.signin {
+  position: relative;
+  background-image: url(lego.png);
+  background-size: 1000px;
+  background-position: center 10px;
+  background-repeat: no-repeat;
+  max-width: 600px;
+  width: 50%;
+  height: 500px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  border-radius: 4px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px); /* Adds a blur effect for a modern look */
+  background-color: #000000cc; /* Semi-transparent background for better readability */
+  transition: transform 0.3s ease-in-out;
+}
+
+.logo-container {
+  position: flex;
+  top: 10px;
+  right: 10px;
+}
+
+.logo {
+  width: 50px; /* Adjust size as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+
+
+
+
+section .signin .content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+}
+
+section .signin .content h2 {
+  font-size: 2em;
+  color: rgb(255, 255, 255);
+  text-transform: uppercase;
+}
+
+section .signin .content .form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+section .signin .content .form .inputBox {
+  position: relative;
+  width: 100%;
+}
+
+section .signin .content .form .inputBox input {
+  width: 100%;
+  background: #333;
+  border: none;
+  outline: none;
+  padding: 15px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1em;
+}
+
+section .signin .content .form .inputBox label {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  font-size: 1em;
+  color: #aaa;
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+section .signin .content .form .inputBox input:focus ~ label,
+section .signin .content .form .inputBox input:valid ~ label {
+  transform: translateY(-25px);
+  font-size: 0.8em;
+  color: #fff;
+}
+
+section .signin .content .form .links {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; /* Align links to the right */
+  margin-top: 10px; /* Adjust spacing as needed */
+}
+
+section .signin .content .form .links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9em; /* Adjust font size as needed */
+  pointer-events: auto; /* Ensure pointer events are enabled */
+  transition: transform 0.2s ease-in-out;
+}
+
+section .signin .content .form .links a:hover {
+  transform: scale(1.1); /* Example effect on hover */
+}
+
+section .signin .content .form .inputBox input[type="submit"] {
+  padding: 12px;
+  background: rgb(255, 255, 255);
+  width: 300px;
+  position: relative;
+  right: -100px;
+  margin: 0 auto;
+  color: #000;
+  font-weight: 600;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+section .signin .content .form .inputBox input[type="submit"]:hover {
+  transform: scale(1.1); /* Example effect on hover */
+   
+}
+
+.signup {
+  color: #ffffff;
+  font-size: bold;
+}
+
+.signup a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 500;
+  transition: color 0.3s; /* Add transition for color change */
+
+}
+
+.signup a:hover {
+  color: rgb(255, 255, 255); /* Adjust color on hover */
+}
+
+
+input[type="submit"]:active,
+.links a:active {
+  opacity: 0.6;
+ 
+}
+@media (max-width: 600px) {
+  section .signin {
+    max-width: 90%;
+  }
+}
+/* Add these styles to your existing styles.css */
+
+/* The Modal (background) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #222;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  max-width: 400px; /* Maximum width */
+  border-radius: 4px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}

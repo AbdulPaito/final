@@ -90,7 +90,7 @@ $date_accomplished = isset($_POST['date_accomplished']) ? $conn->real_escape_str
 $registrar_signature = isset($_POST['registrar_signature']) ? $conn->real_escape_string($_POST['registrar_signature']) : '';
 $date_received = isset($_POST['date_received']) ? $conn->real_escape_string($_POST['date_received']) : '';
 $status = ''; // Add default value or update as needed
-$registration_complete = ''; // Add default value or update as needed
+$registration_complete = 1; // Add default value or update as needed
 
 // Prepare SQL statement to update form data into the database
 $sql = "UPDATE users SET 
@@ -197,15 +197,15 @@ $stmt->bind_param("sssssssssssssssssssssssssssssssssssssssssssss",
 
 // Execute the statement
 if ($stmt->execute()) {
-    echo "Form data updated successfully.";
+    echo "Registration complete and data updated successfully.";
+    header('Location: login.php');
 } else {
-    echo "Error updating form data: " . $stmt->error;
+    echo "Error updating record: " . $stmt->error;
 }
 
 // Close connections
 $stmt->close();
 $conn->close();
-
 
 
 // Clear session data
