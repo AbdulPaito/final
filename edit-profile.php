@@ -165,13 +165,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 800px;
-    max-height: 100vh; /* Adjust if needed */
-    overflow-y: auto; /* Enable vertical scrolling */
-    overflow-x: hidden; /* Disable horizontal scrolling */
+    width: 520px;
+    max-width: 1000px;
+    height: 1750px;
+    position: relative;
+    margin-top: 1160px;
 }
-
 
 .form-container h2 {
     text-align: center;
@@ -179,17 +178,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 .form-container label {
-    display: block;
-    margin-bottom: 5px;
     font-weight: bold;
 }
 
 .form-container input[type="text"],
 .form-container input[type="date"],
 .form-container select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    width: 270px;
+    padding: 5px;
+    margin-bottom: 7px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -211,18 +208,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .image-container {
     border-radius: 4px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
 }
 
 .image-container img {
     width: 150px;
-    height: auto;
-    max-height: 150px;
+        height: auto;
+        max-height: 150px;
 }
+
+
     </style>
-</head>
 </head>
 <body>
     <div class="form-container">
@@ -358,7 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="image-container">
                 <img src="<?php echo htmlspecialchars($user['imageUpload']); ?>" alt="Profile Image">
             </div>
-           
+            <br>
             <input type="submit" name="update" value="Update">
         </form>
     </div>

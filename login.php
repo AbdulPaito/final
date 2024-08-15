@@ -56,15 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-
-
-<!-- Include this HTML for displaying errors -->
-<?php if (!empty($error_message)): ?>
-    <p><?php echo htmlspecialchars($error_message); ?></p>
-<?php endif; ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,6 +69,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       margin-bottom: 20px;
       font-weight: bold;
     }
+
+    .inputBox1 input{
+      padding: 10px;
+      width: 60%;
+      text-align: center;
+      position: relative;
+      border-radius: 20px;
+      
+    }
+    .inputBox1 {
+      text-align: center;
+      border-radius: 20px;
+    }
+
   </style>
 </head>
 <body>
@@ -97,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="password" name="password" required>
             <label>Password</label>
           </div>
-          <div class="inputBox">
+          <div class="inputBox1">
             <input type="submit" value="Login">
           </div>
         </form>

@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         .header-container img {
-            width: 140px; /* Adjust the width as needed */
+            width: 130px; /* Adjust the width as needed */
             height: auto;
         }
 

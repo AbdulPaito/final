@@ -34,7 +34,6 @@ if (mysqli_num_rows($result) == 0) {
 $row = mysqli_fetch_assoc($result);
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

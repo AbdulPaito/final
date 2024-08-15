@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (isset($_FILES['imageUpload']) && $_FILES['imageUpload']['error'] == 0) {
         $uploadedFile = $_FILES['imageUpload'];
-        $uploadDir = 'Upload-image'; // Ensure this directory exists and is writable
+        $uploadDir = 'picture/'; // Ensure this directory exists and is writable
         $uploadFile = $uploadDir . basename($uploadedFile['name']);
 
         // Validate file type
