@@ -114,6 +114,49 @@ if (!$result) {
             border-radius: 4px;
             box-sizing: border-box;
         }
+
+        /* Search Form Styling */
+form {
+    display: flex;
+    justify-content: right;
+    margin-bottom: 20px;
+}
+
+form input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background: #007bff;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+form button:hover {
+    background: #0056b3;
+}
+
+form input[type="text"]::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+form input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -141,6 +184,14 @@ if (!$result) {
 
 <section id="profile-section">
     <h1>Profile</h1>
+
+    <!-- Search Form -->
+    <form method="GET" action="profile.php" style="margin-bottom: 20px;">
+        <input type="text" name="search" placeholder="Search by name or course" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Profile Table -->
     <table class="profile-table">
         <thead>
             <tr>
@@ -154,6 +205,28 @@ if (!$result) {
         </thead>
         <tbody>
             <?php
+                // Database connection and query
+                $host = 'localhost';
+                $user = ''; 
+                $password = '';
+                $database = 'tesda';
+
+                $connection = mysqli_connect($host, $user, $password, $database);
+
+                if (!$connection) {
+                    die("Connection failed: " . mysqli_connect_error());
+                }
+
+                // Step 2: Handle search query
+                $search = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
+                $query = "SELECT * FROM users WHERE first_name LIKE '%$search%' OR qualification LIKE '%$search%'";
+                $result = mysqli_query($connection, $query);
+
+                if (!$result) {
+                    die("Query failed: " . mysqli_error($connection));
+                }
+
+                // Display results
                 $counter = 1;
                 if ($result) {
                     while ($row = mysqli_fetch_assoc($result)) {
@@ -164,11 +237,10 @@ if (!$result) {
                     <td><?php echo htmlspecialchars($row['qualification']); ?></td>
                     <td>
                         <select class="status-select" data-id="<?php echo $row['id']; ?>">
-                        <option value="Pending" <?php echo ($row['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
+                            <option value="Pending" <?php echo ($row['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
                             <option value="Enroll" <?php echo ($row['status'] == 'Enroll') ? 'selected' : ''; ?>>Enroll</option>
                             <option value="Graduate" <?php echo ($row['status'] == 'Graduate') ? 'selected' : ''; ?>>Graduate</option>
                             <option value="Drop" <?php echo ($row['status'] == 'Drop') ? 'selected' : ''; ?>>Drop</option>
-                            
                         </select>
                     </td>
                     <td><a class="edit-button" href="edit-profile.php?id=<?php echo $row['id']; ?>">Edit</a></td>
@@ -177,10 +249,8 @@ if (!$result) {
             <?php
                     }
                 }
+                mysqli_close($connection);
             ?>
         </tbody>
     </table>
 </section>
-
-</body>
-</html>

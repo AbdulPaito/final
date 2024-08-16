@@ -1,11 +1,8 @@
 <?php
 require_once('database.php'); // Make sure this file includes your database connection
 
-// Handle search query
-$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
-
-// Modify query to include search functionality
-$query = "SELECT * FROM users WHERE username LIKE '%$search%' OR email LIKE '%$search%'";
+// Perform query
+$query = "SELECT * FROM admins";
 $result = mysqli_query($conn, $query);
 
 // Check if query execution was successful
@@ -14,13 +11,8 @@ if (!$result) {
 }
 ?>
 
-
 <section id="settings-section">
-    <h1>Settings</h1>
-    <form method="GET" action="settings.php">
-        <input type="text" name="search" placeholder="Search by username or email..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-        <button type="submit">Search</button>
-    </form>
+    <h1>Admin</h1>
     <table class="settings-table">
         <thead>
             <tr>
@@ -42,8 +34,8 @@ if (!$result) {
                     <td><?php echo htmlspecialchars($row['username']); ?></td>
                     <td><?php echo htmlspecialchars($row['password']); ?></td>
                     <td><?php echo htmlspecialchars($row['email']); ?></td>
-                    <td><a class="edit-button" href="edit.php?id=<?php echo $row['id']; ?>">Edit</a></td>
-                    <td><a class="delete-button" href="delete.php?id=<?php echo $row['id']; ?>">Delete</a></td>
+                    <td><a class="edit-button" href="admin_edit.php?id=<?php echo $row['id']; ?>">Edit</a></td>
+                    <td><a class="delete-button" href="admin_delete.php?id=<?php echo $row['id']; ?>">Delete</a></td>
                 </tr>
             <?php
             }
@@ -51,7 +43,6 @@ if (!$result) {
         </tbody>
     </table>
 </section>
-
 
 <?php
 // More PHP code here if needed
@@ -130,47 +121,4 @@ if (!$result) {
     .delete-button:hover {
         background: #e53935;
     }
-
-
-         /* Search Form Styling */
-form {
-    display: flex;
-    justify-content: right;
-    margin-bottom: 20px;
-}
-
-form input[type="text"] {
-    width: 300px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
-    margin-right: 10px;
-    box-sizing: border-box;
-}
-
-form button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background: #007bff;
-    color: #fff;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-form button:hover {
-    background: #0056b3;
-}
-
-form input[type="text"]::placeholder {
-    color: #aaa;
-    font-style: italic;
-}
-
-form input[type="text"]:focus {
-    border-color: #007bff;
-    outline: none;
-}
 </style>

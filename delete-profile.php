@@ -35,7 +35,7 @@ if (isset($_POST['confirm']) && $_POST['confirm'] === 'yes') {
 
     if (mysqli_stmt_execute($stmt)) {
         // Redirect to profile page after successful deletion
-        header("Location: dashboard.php");
+        header("Location: dashboard.php?page=profile");
         exit();
     } else {
         echo "Error deleting record: " . mysqli_error($connection);
@@ -116,7 +116,7 @@ mysqli_close($connection);
         <input type="hidden" name="confirm" value="yes">
         <div class="buttons">
             <button type="submit">Delete</button>
-            <button type="button" class="cancel" onclick="window.location.href='dashboard.php'">Cancel</button>
+            <button type="button" class="cancel" onclick="window.location.href='dashboard.php?page=profile'">Cancel</button>
         </div>
     </form>
 </div>

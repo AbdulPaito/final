@@ -12,8 +12,11 @@ if (!$connection) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// Step 2: Execute query to fetch data
-$query = "SELECT * FROM users";
+// Step 2: Handle search query
+$search = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
+
+// Step 3: Modify query to include search functionality
+$query = "SELECT * FROM users WHERE first_name LIKE '%$search%' OR qualification LIKE '%$search%'";
 $result = mysqli_query($connection, $query);
 
 // Check if query execution was successful
@@ -107,12 +110,58 @@ if (!$result) {
             background: #45a049;
         }
 
+
+            /* Search Form Styling */
+form {
+    display: flex;
+    justify-content: right;
+    margin-bottom: 20px;
+}
+
+form input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background: #007bff;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+form button:hover {
+    background: #0056b3;
+}
+
+form input[type="text"]::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+form input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
     </style>
 </head>
 <body>
 
 <section id="report-section">
     <h1>Reports</h1>
+    <form method="GET" action="reports.php">
+        <input type="text" name="search" placeholder="Search by user or course..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit">Search</button>
+    </form>
     <table class="reports-table">
         <thead>
             <tr>

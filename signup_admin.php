@@ -2,66 +2,47 @@
 session_start();
 include 'database.php'; // Include your database connection file
 
-$error_message = ''; // Variable to store error messages
+$error_message = '';
+$success_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password']; // Raw password
-    $email = $_POST['email'];
+    if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
+        $username = $_POST['username'];
+        $password = $_POST['password']; // Use plain text password
+        $email = $_POST['email'];
 
-    // Basic validation
-    if (empty($username) || empty($password) || empty($email)) {
-        $error_message = "All fields are required.";
-    } else {
-        // Check if username is already taken
-        $check_user_sql = "SELECT * FROM users WHERE username = ?";
-        $stmt = $conn->prepare($check_user_sql);
+        // Check if username already exists
+        $stmt = $conn->prepare("SELECT id FROM admins WHERE username = ?");
         if ($stmt === false) {
-            die("Prepare failed: " . $conn->error); // Output detailed error message
+            die("Prepare failed: " . $conn->error);
         }
         $stmt->bind_param("s", $username);
         $stmt->execute();
-        $user_result = $stmt->get_result();
+        $result = $stmt->get_result();
 
-        if ($user_result->num_rows > 0) {
+        if ($result->num_rows > 0) {
             $error_message = "Username already exists.";
         } else {
-            // Check if email is already taken
-            $check_email_sql = "SELECT * FROM users WHERE email = ?";
-            $stmt = $conn->prepare($check_email_sql);
+            // Insert new user into the database with plain text password
+            $stmt = $conn->prepare("INSERT INTO admins (username, password, email) VALUES (?, ?, ?)");
             if ($stmt === false) {
-                die("Prepare failed: " . $conn->error); // Output detailed error message
+                die("Prepare failed: " . $conn->error);
             }
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $email_result = $stmt->get_result();
-
-            if ($email_result->num_rows > 0) {
-                $error_message = "Email address already in use.";
+            $stmt->bind_param("sss", $username, $password, $email);
+            if ($stmt->execute()) {
+                $success_message = "Account created successfully.";
+                header('Location: admin_login.php'); // Redirect to login page
+                exit();
             } else {
-                // Insert new user into users table with raw password
-                $insert_sql = "INSERT INTO users (username, password, email, status) VALUES (?, ?, ?, 'Pending')";
-                $stmt = $conn->prepare($insert_sql);
-                if ($stmt === false) {
-                    die("Prepare failed: " . $conn->error); // Output detailed error message
-                }
-                $stmt->bind_param("sss", $username, $password, $email);
-
-                if ($stmt->execute()) {
-                    // Automatically log the user in after successful registration
-                    $_SESSION['user_id'] = $conn->insert_id; // Store the new user's ID in session
-                    $_SESSION['username'] = $username; // Store username in session
-
-                    header('Location: page1.php'); // Redirect to page1.php after successful registration
-                    exit;
-                } else {
-                    $error_message = "Error registering user: " . $stmt->error;
-                }
+                die("Execute failed: " . $stmt->error);
             }
         }
+    } else {
+        $error_message = "All fields are required.";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -118,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php if (!empty($error_message)): ?>
           <div class="error-container"><?php echo htmlspecialchars($error_message); ?></div>
         <?php endif; ?>
-        <form class="form" action="signup.php" method="POST">
+        <form class="form" action="signup_admin.php" method="POST">
           <div class="inputBox">
             <input type="text" name="username" required>
             <label>Username</label>

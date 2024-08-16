@@ -1,142 +1,117 @@
 <?php
-// Start the session (assuming user login info is stored in session)
+// Start the session
 session_start();
 
-// Step 1: Establish database connection
-$host = 'localhost';  // Replace with your host
-$user = 'root';   // Replace with your database username
-$password = ''; // Replace with your database password
-$database = 'tesda'; // Replace with your database name
+// Database connection details
+$host = 'localhost';
+$user = 'root';
+$password = '';
+$database = 'tesda';
 
+// Establish database connection
 $connection = mysqli_connect($host, $user, $password, $database);
-
-// Check connection
 if (!$connection) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
 // Get user ID from session
-$id = $_SESSION['user_id']; // Ensure user is logged in and 'user_id' is set in session
+$id = $_SESSION['user_id'];
 
-// Step 2: Fetch user data
+// Fetch user data
 $query = "SELECT * FROM users WHERE id = $id";
 $result = mysqli_query($connection, $query);
-
 if (!$result) {
     die("Query failed: " . mysqli_error($connection));
 }
 
 $user = mysqli_fetch_assoc($result);
 
-// Step 3: Handle form submission
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $profile_image = $user['profile_image']; // Keep the existing image by default
+    // Directory for uploads
+    $upload_dir = 'uploads/';
 
-    // Handle file upload
-    if (isset($_FILES['imageUpload']) && $_FILES['imageUpload']['error'] === UPLOAD_ERR_OK) {
-        $image_tmp_name = $_FILES['imageUpload']['tmp_name'];
-        $image_name = basename($_FILES['imageUpload']['name']);
-        $upload_dir = 'uploads/'; // Ensure this directory exists and is writable
-        $image_path = $upload_dir . $image_name;
+    // Ensure the uploads directory exists
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
+    }
 
-        // Move the uploaded file to the desired location
-        if (move_uploaded_file($image_tmp_name, $image_path)) {
-            $profile_image = $image_path;
+    // Handle profile image upload
+    $profile_image = $user['profile_image'];
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+        $profile_tmp_name = $_FILES['profile_image']['tmp_name'];
+        $profile_name = basename($_FILES['profile_image']['name']);
+        $profile_path = $upload_dir . $profile_name;
+
+        if (move_uploaded_file($profile_tmp_name, $profile_path)) {
+            $profile_image = $profile_path;
         } else {
-            die("Failed to upload image.");
+            die("Failed to upload profile image.");
         }
     }
 
-    // Collect form data
-    $uli_number = $_POST['uli_number'];
-    $entry_date = $_POST['entry_date'];
-    $last_name = $_POST['last_name'];
-    $first_name = $_POST['first_name'];
-    $middle_name = $_POST['middle_name'];
-    $address_number_street = $_POST['address_number_street'];
-    $address_barangay = $_POST['address_barangay'];
-    $address_district = $_POST['address_district'];
-    $address_city_municipality = $_POST['address_city_municipality'];
-    $address_province = $_POST['address_province'];
-    $address_region = $_POST['address_region'];
-    $email_facebook = $_POST['email_facebook'];
-    $contact_no = $_POST['contact_no'];
-    $nationality = $_POST['nationality'];
-    $sex = $_POST['sex'];
-    $civil_status = $_POST['civil_status'];
-    $employment_status = $_POST['employment_status'];
-    $month_of_birth = $_POST['month_of_birth'];
-    $day_of_birth = $_POST['day_of_birth'];
-    $year_of_birth = $_POST['year_of_birth'];
-    $age = $_POST['age'];
-    $birthplace_city_municipality = $_POST['birthplace_city_municipality'];
-    $birthplace_province = $_POST['birthplace_province'];
-    $birthplace_region = $_POST['birthplace_region'];
-    $educational_attainment = $_POST['educational_attainment'];
-    $parent_guardian_name = $_POST['parent_guardian_name'];
-    $parent_guardian_address = $_POST['parent_guardian_address'];
-    $classification = $_POST['classification'];
-    $disability = $_POST['disability'];
-    $cause_of_disability = $_POST['cause_of_disability'];
-    $taken_ncae = $_POST['taken_ncae'];
-    $where_ncae = $_POST['where_ncae'];
-    $when_ncae = $_POST['when_ncae'];
-    $qualification = $_POST['qualification'];
-    $scholarship = $_POST['scholarship'];
-    $privacy_disclaimer = $_POST['privacy_disclaimer'];
-    $applicant_signature = $_POST['applicant_signature'];
-    $date_accomplished = $_POST['date_accomplished'];
-    $registrar_signature = $_POST['registrar_signature'];
-    $date_received = $_POST['date_received'];
-    $status = $_POST['status'];
+    // Handle picture upload
+    $picture = $user['imageUpload'];
+    if (isset($_FILES['imageUpload']) && $_FILES['imageUpload']['error'] === UPLOAD_ERR_OK) {
+        $picture_tmp_name = $_FILES['imageUpload']['tmp_name'];
+        $picture_name = basename($_FILES['imageUpload']['name']);
+        $picture_path = $upload_dir . $picture_name;
 
-    $update_query = "
-    UPDATE users SET
+        if (move_uploaded_file($picture_tmp_name, $picture_path)) {
+            $picture = $picture_path;
+        } else {
+            die("Failed to upload picture.");
+        }
+    }
+
+    // Update the database
+    $update_query = "UPDATE users SET
         profile_image = '$profile_image',
-        uli_number = '$uli_number',
-        entry_date = '$entry_date',
-        last_name = '$last_name',
-        first_name = '$first_name',
-        middle_name = '$middle_name',
-        address_number_street = '$address_number_street',
-        address_barangay = '$address_barangay',
-        address_district = '$address_district',
-        address_city_municipality = '$address_city_municipality',
-        address_province = '$address_province',
-        address_region = '$address_region',
-        email_facebook = '$email_facebook',
-        contact_no = '$contact_no',
-        nationality = '$nationality',
-        sex = '$sex',
-        civil_status = '$civil_status',
-        employment_status = '$employment_status',
-        month_of_birth = '$month_of_birth',
-        day_of_birth = '$day_of_birth',
-        year_of_birth = '$year_of_birth',
-        age = '$age',
-        birthplace_city_municipality = '$birthplace_city_municipality',
-        birthplace_province = '$birthplace_province',
-        birthplace_region = '$birthplace_region',
-        educational_attainment = '$educational_attainment',
-        parent_guardian_name = '$parent_guardian_name',
-        parent_guardian_address = '$parent_guardian_address',
-        classification = '$classification',
-        disability = '$disability',
-        cause_of_disability = '$cause_of_disability',
-        taken_ncae = '$taken_ncae',
-        where_ncae = '$where_ncae',
-        when_ncae = '$when_ncae',
-        qualification = '$qualification',
-        scholarship = '$scholarship',
-        privacy_disclaimer = '$privacy_disclaimer',
-        applicant_signature = '$applicant_signature',
-        date_accomplished = '$date_accomplished',
-        registrar_signature = '$registrar_signature',
-        date_received = '$date_received',
-        status = '$status'
-    WHERE id = $id
-";
+        imageUpload = '$picture',
+        uli_number = '{$_POST['uli_number']}',
+        entry_date = '{$_POST['entry_date']}',
+        last_name = '{$_POST['last_name']}',
+        first_name = '{$_POST['first_name']}',
+        middle_name = '{$_POST['middle_name']}',
+        address_number_street = '{$_POST['address_number_street']}',
+        address_barangay = '{$_POST['address_barangay']}',
+        address_district = '{$_POST['address_district']}',
+        address_city_municipality = '{$_POST['address_city_municipality']}',
+        address_province = '{$_POST['address_province']}',
+        address_region = '{$_POST['address_region']}',
+        email_facebook = '{$_POST['email_facebook']}',
+        contact_no = '{$_POST['contact_no']}',
+        nationality = '{$_POST['nationality']}',
+        sex = '{$_POST['sex']}',
+        civil_status = '{$_POST['civil_status']}',
+        employment_status = '{$_POST['employment_status']}',
+        month_of_birth = '{$_POST['month_of_birth']}',
+        day_of_birth = '{$_POST['day_of_birth']}',
+        year_of_birth = '{$_POST['year_of_birth']}',
+        age = '{$_POST['age']}',
+        birthplace_city_municipality = '{$_POST['birthplace_city_municipality']}',
+        birthplace_province = '{$_POST['birthplace_province']}',
+        birthplace_region = '{$_POST['birthplace_region']}',
+        educational_attainment = '{$_POST['educational_attainment']}',
+        parent_guardian_name = '{$_POST['parent_guardian_name']}',
+        parent_guardian_address = '{$_POST['parent_guardian_address']}',
+        classification = '{$_POST['classification']}',
+        disability = '{$_POST['disability']}',
+        cause_of_disability = '{$_POST['cause_of_disability']}',
+        taken_ncae = '{$_POST['taken_ncae']}',
+        where_ncae = '{$_POST['where_ncae']}',
+        when_ncae = '{$_POST['when_ncae']}',
+        qualification = '{$_POST['qualification']}',
+        scholarship = '{$_POST['scholarship']}',
+        privacy_disclaimer = '{$_POST['privacy_disclaimer']}',
+        applicant_signature = '{$_POST['applicant_signature']}',
+        date_accomplished = '{$_POST['date_accomplished']}',
+        registrar_signature = '{$_POST['registrar_signature']}',
+        date_received = '{$_POST['date_received']}',
+        status = '{$_POST['status']}'
+        WHERE id = $id";
 
+ 
     $update_result = mysqli_query($connection, $update_query);
 
     if (!$update_result) {
@@ -172,9 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 520px;
     max-width: 1000px;
-    height: 1600px;
+    height: 1790px;
     position: relative;
-    margin-top: 1000px;
+    margin-top: 880px;
 }
 
 .form-container h2 {
@@ -234,6 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="image-container">
                 <img src="<?php echo htmlspecialchars($user['profile_image']); ?>" alt="Profile Image">
             </div>
+            <input type="file" name="profile_image" accept="image/*">
+            <br>
             <br>
             <label for="uli_number">ULI Number:</label>
             <input type="text" name="uli_number" value="<?php echo htmlspecialchars($user['uli_number']); ?>" required>
@@ -355,6 +332,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="date_received">Date Received:</label>
             <input type="text" name="date_received" value="<?php echo htmlspecialchars($user['date_received']); ?>" required>
             <br>
+
+            <label for="imageUpload">Picture:</label>
+            <div class="image-container">
+                <img src="<?php echo htmlspecialchars($user['imageUpload']); ?>" alt="Picture">
+            </div>
+            <input type="file" name="imageUpload" accept="image/*">
+            <br>
+
             <input type="submit" value="Update">
         </form>
     </div>

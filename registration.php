@@ -11,8 +11,11 @@ if (!$connection) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-// Step 2: Execute query to fetch data
-$query = "SELECT * FROM users";
+// Handle search query
+$search = isset($_GET['search']) ? mysqli_real_escape_string($connection, $_GET['search']) : '';
+
+// Modify query to include search functionality
+$query = "SELECT * FROM users WHERE first_name LIKE '%$search%'";
 $result = mysqli_query($connection, $query);
 
 // Check if query execution was successful
@@ -20,6 +23,7 @@ if (!$result) {
     die("Query failed: " . mysqli_error($connection));
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -119,40 +123,69 @@ if (!$result) {
         .registration-table td img {
             border-radius: 4px;
         }
+
+
+        form {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 300px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
     </style>
 </head>
 <body>
 <section id="registration-section">
-        <div class="container">
-            <h1>Registration</h1>
-            <div class="table-responsive">
-                <table class="registration-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>ID Picture</th>
-                            <th>First Name</th>
-                            <th>Info</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $counter = 1;
-                    while ($row = mysqli_fetch_assoc($result)) {
-                    ?>
-                        <tr>
-                            <td><?php echo $counter++; ?></td>
-                            <td><img src="<?= htmlspecialchars($row['profile_image']) ?>" alt="Profile Image"></td>
-                            <td><?php echo htmlspecialchars($row['first_name']); ?></td>
-                            <td><a class="info" href="info.php?id=<?php echo $row['id']; ?>">Info</a></td>
-                        </tr>
-                    <?php
-                    }
-                    ?>
-                    </tbody>
-                </table>
-            </div>
+    <div class="container">
+        <h1>Registration</h1>
+        <form method="GET" action="registration.php">
+            <input type="text" name="search" placeholder="Search by first name..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            <button type="submit">Search</button>
+        </form>
+        <div class="table-responsive">
+            <table class="registration-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ID Picture</th>
+                        <th>First Name</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $counter = 1;
+                while ($row = mysqli_fetch_assoc($result)) {
+                ?>
+                    <tr>
+                        <td><?php echo $counter++; ?></td>
+                        <td><img src="<?= htmlspecialchars($row['profile_image']) ?>" alt="Profile Image"></td>
+                        <td><?php echo htmlspecialchars($row['first_name']); ?></td>
+                        <td><a class="info" href="info.php?id=<?php echo $row['id']; ?>">Info</a></td>
+                    </tr>
+                <?php
+                }
+                ?>
+                </tbody>
+            </table>
         </div>
-    </section>
-</body>
-</html>
+    </div>
+</section>

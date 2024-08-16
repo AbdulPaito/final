@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $id = $_POST['id'];
 
     // Delete user from database
-    $query = "DELETE FROM users WHERE id = ?";
+    $query = "DELETE FROM admins WHERE id = ?";
     $stmt = mysqli_prepare($conn, $query);
 
     if ($stmt) {
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
 } elseif (isset($_GET['id'])) {
     $id = $_GET['id'];
 } else {
-    header("Location: dashboard.php?page=settings");
+    header("Location: dashboard.php?page=admin");
     exit();
 }
 ?>
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     <div class="container">
         <?php if (isset($message)) { ?>
             <div class="message"><?php echo $message; ?></div>
-            <a href="dashboard.php?page=settings">Go back to Dashboard</a>
+            <a href="dashboard.php?page=admin">Go back to Dashboard</a>
         <?php } else { ?>
             <div class="message">Are you sure you want to delete this user?</div>
             <div class="buttons">
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
                     <input type="submit" value="Delete">
                 </form>
-                <a href="dashboard.php?page=settings" class="cancel">Cancel</a>
+                <a href="dashboard.php?page=admin" class="cancel">Cancel</a>
             </div>
         <?php } ?>
     </div>
