@@ -13,16 +13,18 @@ if (!$result) {
 
 <section id="settings-section">
     <h1>Admin</h1>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <table class="settings-table">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Email</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
+        <tr>
+          <th><i class="fas fa-id-badge"></i> ID</th>
+            <th><i class="fas fa-user"></i> Username</th>
+            <th><i class="fas fa-key"></i> Password</th>
+            <th><i class="fas fa-envelope"></i> Email</th>
+            <th><i class="fas fa-edit"></i> Edit</th>
+            <th><i class="fas fa-trash-alt"></i> Delete</th>
+        </tr>
+
         </thead>
         <tbody>
             <?php
@@ -31,9 +33,12 @@ if (!$result) {
             ?>
                 <tr>
                     <td><?php echo $counter++; ?></td>
-                    <td><?php echo htmlspecialchars($row['username']); ?></td>
-                    <td><?php echo htmlspecialchars($row['password']); ?></td>
-                    <td><?php echo htmlspecialchars($row['email']); ?></td>
+                    <td><?php echo htmlspecialchars($row['username_admin']); ?></td>
+                    <td>
+                        <input type="password" value="<?php echo htmlspecialchars($row['password_admin']); ?>" id="password-<?php echo $row['id']; ?>" class="password-field" readonly>
+                        <i class="fas fa-eye" onclick="togglePassword(<?php echo $row['id']; ?>)" style="cursor: pointer;"></i>
+                    </td>
+                    <td><?php echo htmlspecialchars($row['email_admin']); ?></td>
                     <td><a class="edit-button" href="admin_edit.php?id=<?php echo $row['id']; ?>">Edit</a></td>
                     <td><a class="delete-button" href="admin_delete.php?id=<?php echo $row['id']; ?>">Delete</a></td>
                 </tr>
@@ -43,6 +48,23 @@ if (!$result) {
         </tbody>
     </table>
 </section>
+
+<script>
+function togglePassword(id) {
+    var passwordField = document.getElementById('password-' + id);
+    var eyeIcon = passwordField.nextElementSibling;
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+</script>
 
 <?php
 // More PHP code here if needed
@@ -121,4 +143,25 @@ if (!$result) {
     .delete-button:hover {
         background: #e53935;
     }
+    .password-field {
+    border: none;
+    background: transparent;
+    font-size: 1em;
+    width: auto;
+    text-align: center;
+    font-family: inherit;
+    margin-right: 5px;
+}
+
+.password-field:focus {
+    outline: none;
+}
+
+td i {
+    color: black;
+}
+
+td i:hover {
+    color: #0056b3;
+}
 </style>

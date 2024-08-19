@@ -2,8 +2,8 @@
 session_start();
 require_once('database.php'); // Ensure this includes your database connection
 
-$username = "";
-$new_password = "";
+$username_admin = "";
+$new_password_admin = "";
 $message = "";
 
 // Fetch user data if an ID is provided (for initial form display or after update)
@@ -11,13 +11,13 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     // Fetch current user data
-    $query = "SELECT username FROM admins WHERE id = ?";
+    $query = "SELECT username_admin FROM admins WHERE id = ?";
     $stmt = mysqli_prepare($conn, $query);
 
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
-        mysqli_stmt_bind_result($stmt, $username);
+        mysqli_stmt_bind_result($stmt, $username_admin);
         mysqli_stmt_fetch($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -25,30 +25,48 @@ if (isset($_GET['id'])) {
 
 // Check if form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $new_password = $_POST['password'];
+    $username_admin = $_POST['username_admin'];
+    $new_password_admin = $_POST['password_admin'];
 
-    // Validate and update user data in database
-    $query = "UPDATE admins SET username = ?, password = ? WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $query);
+    if (empty($new_password_admin)) {
+        // Update only the username if the password is not provided
+        $query = "UPDATE admins SET username_admin = ? WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "ssi", $username, $new_password, $id);
-        $success = mysqli_stmt_execute($stmt);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "si", $username_admin, $id);
+            $success = mysqli_stmt_execute($stmt);
 
-        if ($success) {
-            $message = "User updated successfully.";
-
-            // Update session if the user updates their own username or password
-            if (isset($_SESSION['username']) && $_SESSION['username'] === $username) {
-                $_SESSION['username'] = $username;
-                // You may also update other session data here if needed
+            if ($success) {
+                $message = "Admin username updated successfully.";
+            } else {
+                $message = "Error updating admin: " . mysqli_error($conn);
             }
         } else {
-            $message = "Error updating user: " . mysqli_error($conn);
+            $message = "Prepare statement failed: " . mysqli_error($conn);
         }
     } else {
-        $message = "Prepare statement failed: " . mysqli_error($conn);
+        // Update both the username and password
+        $query = "UPDATE admins SET username_admin = ?, password_admin = ? WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
+
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "ssi", $username_admin, $new_password_admin, $id);
+            $success = mysqli_stmt_execute($stmt);
+
+            if ($success) {
+                $message = "Admin updated successfully.";
+
+                // Update session if the user updates their own username or password
+                if (isset($_SESSION['username_admin']) && $_SESSION['username_admin'] === $username_admin) {
+                    $_SESSION['username_admin'] = $username_admin;
+                }
+            } else {
+                $message = "Error updating admin: " . mysqli_error($conn);
+            }
+        } else {
+            $message = "Prepare statement failed: " . mysqli_error($conn);
+        }
     }
 
     mysqli_stmt_close($stmt);
@@ -62,7 +80,8 @@ mysqli_close($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit User</title>
+    <title>Edit Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome -->
     <style>
         body {
             display: flex;
@@ -87,6 +106,7 @@ mysqli_close($conn);
         
         .form-group {
             margin-bottom: 15px;
+            position: relative;
         }
         
         .form-group label {
@@ -96,10 +116,27 @@ mysqli_close($conn);
         
         .form-group input[type="text"],
         .form-group input[type="password"] {
-            width: calc(100% - 12px);
+            width: calc(100% - 40px); /* Adjust width to accommodate the eye icon */
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+
+        .form-group .password-container {
+            position: relative;
+        }
+        
+        .form-group .password-container input {
+            padding-right: 40px; /* Space for the eye icon */
+        }
+        
+        .form-group .eye-icon {
+            position: absolute;
+            right: 30px;
+            top: 40px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
         }
         
         .form-group button {
@@ -133,18 +170,19 @@ mysqli_close($conn);
 </head>
 <body>
     <div class="form-container">
-        <h2>Edit User</h2>
+        <h2>Edit Admin</h2>
         <?php if (!empty($message)) : ?>
             <p><?php echo $message; ?></p>
         <?php endif; ?>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id=' . $id; ?>" method="POST">
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>">
+                <label for="username_admin">Username:</label>
+                <input type="text" id="username_admin" name="username_admin" value="<?php echo htmlspecialchars($username_admin); ?>">
             </div>
-            <div class="form-group">
-                <label for="password">New Password:</label>
-                <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($new_password); ?>">
+            <div class="form-group password-container">
+                <label for="password_admin">New Password:</label>
+                <input type="password" id="password_admin" name="password_admin" value="<?php echo htmlspecialchars($new_password_admin); ?>">
+                <i class="fas fa-eye eye-icon" onclick="togglePassword()"></i> <!-- Font Awesome eye icon -->
             </div>
             <div class="form-group">
                 <button type="submit" name="submit">Change password</button>
@@ -152,5 +190,22 @@ mysqli_close($conn);
             </div>
         </form>
     </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password_admin');
+            const eyeIcon = document.querySelector('.eye-icon');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>

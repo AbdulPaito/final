@@ -10,16 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST['username'];
         $password = $_POST['password']; // Use plain text password for comparison
 
-        // Check if it's the default admin login
-        if ($username === 'admin' && $password === 'adminpass') {
-            $_SESSION['username'] = 'admin';
-            $_SESSION['role'] = 'admin'; // Optional: Store role if needed
-            header("Location: dashboard.php"); // Redirect to admin dashboard
-            exit();
-        }
-
-        // Check user credentials in the users table
-        $stmt = $conn->prepare("SELECT id, password, registration_complete FROM users WHERE username = ?");
+        // Check admin credentials in the admins table
+        $stmt = $conn->prepare("SELECT id, password_admin FROM admins WHERE username_admin = ?");
         if ($stmt === false) {
             die("Prepare failed: " . $conn->error); // Output detailed error message
         }
@@ -28,27 +20,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
+            $admin = $result->fetch_assoc();
 
             // Direct comparison for plain text password
-            if ($password === $user['password']) {
-                $_SESSION['user_id'] = $user['id'];
+            if ($password === $admin['password_admin']) {
+                $_SESSION['user_id'] = $admin['id'];
                 $_SESSION['username'] = $username; // Set session username correctly
+                $_SESSION['role'] = 'admin'; // Set session role as admin
 
-                // Check if the user has completed their registration
-                if ($user['registration_complete']) {
-                    // User has completed registration; redirect to edit_info.php
-                    header("Location: info_edit.php");
-                } else {
-                    // User has not completed registration; redirect to registration form
-                    header("Location: page1.php");
-                }
+                header("Location: dashboard.php"); // Redirect to admin dashboard
                 exit();
             } else {
                 $error_message = "Invalid password."; // Set error message
             }
         } else {
-            $error_message = "No user found with that username."; // Set error message
+            // Check user credentials in the users table
+            $stmt = $conn->prepare("SELECT id, password, registration_complete FROM users WHERE username = ?");
+            if ($stmt === false) {
+                die("Prepare failed: " . $conn->error); // Output detailed error message
+            }
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+
+                // Direct comparison for plain text password
+                if ($password === $user['password']) {
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $username; // Set session username correctly
+
+                    // Check if the user has completed their registration
+                    if ($user['registration_complete']) {
+                        // User has completed registration; redirect to edit_info.php
+                        header("Location: info_edit.php");
+                    } else {
+                        // User has not completed registration; redirect to registration form
+                        header("Location: page1.php");
+                    }
+                    exit();
+                } else {
+                    $error_message = "Invalid password."; // Set error message
+                }
+            } else {
+                $error_message = "No user found with that username."; // Set error message
+            }
         }
     } else {
         $error_message = "Username and password required."; // Set error message
@@ -126,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <section>
     <div class="signin">
       <div class="content">
-        <h2>Login Trainee</h2>
+        <h2>Login</h2>
         <?php if (!empty($error_message)): ?>
           <div class="error-message"><?php echo htmlspecialchars($error_message); ?></div>
         <?php endif; ?>

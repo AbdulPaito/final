@@ -28,7 +28,6 @@ if (!$result) {
 
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +53,7 @@ if (!$result) {
 
         /* Heading styling */
         #report-section h1 {
-            text-align: center;
+        text-align: center;
         background: #1182fa;;
         color: #fff;
         padding: 20px 0;
@@ -116,6 +115,8 @@ form {
     display: flex;
     justify-content: right;
     margin-bottom: 20px;
+    position: relative;
+    top: 10px;
 }
 
 form input[type="text"] {
@@ -158,33 +159,35 @@ form input[type="text"]:focus {
 
 <section id="report-section">
     <h1>Reports</h1>
-    <form method="GET" action="reports.php">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <form method="GET" action="dashboard.php">
+        <input type="hidden" name="page" value="reports">
         <input type="text" name="search" placeholder="Search by user or course..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
         <button type="submit">Search</button>
     </form>
     <table class="reports-table">
         <thead>
-            <tr>
-            <th>ID</th>
-            <th>NAME</th>
-            <th>COURSE</th>
-            <th>PRINT</th>
-            </tr>
+        <tr>
+            <th><i class="fas fa-id-badge"></i> ID</th>
+            <th><i class="fas fa-user"></i> NAME</th>
+            <th><i class="fas fa-book-open"></i> COURSE</th>
+            <th><i class="fas fa-print"></i> PRINT</th>
+        </tr>
         </thead>
         <tbody>
         <?php
-            $counter = 1;
-            while ($row = mysqli_fetch_assoc($result)) {
-            ?>
-                <tr>
-                    <td><?php echo $counter++; ?></td>
-                    <td><?php echo htmlspecialchars($row['first_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['qualification']); ?></td>
-                    <td><a class="print-button" href="print1.php?id=<?php echo $row['id']; ?>">Print</a></td>
-                </tr>
-            <?php
-            }
-            ?>
+        $counter = 1;
+        while ($row = mysqli_fetch_assoc($result)) {
+        ?>
+            <tr>
+                <td><?php echo $counter++; ?></td>
+                <td><?php echo htmlspecialchars($row['first_name']); ?></td>
+                <td><?php echo htmlspecialchars($row['qualification']); ?></td>
+                <td><a class="print-button" href="print1.php?id=<?php echo $row['id']; ?>"> <i class="fas fa-print"></i> Print</a></td>
+            </tr>
+        <?php
+        }
+        ?>
         </tbody>
     </table>
 </section>

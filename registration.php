@@ -41,22 +41,21 @@ if (!$result) {
         }
 
         #registration-section {
-            background-color: rgba(7, 147, 235, 0.808);
             position: relative;
-            padding: 15px;
+            padding: 10px;
             width: auto;
-            margin-top: -20px;
-            margin-left: -20px;
+            margin-top: -36px;
+            margin-left: -36px;
         }
 
         /* Header styling within the registration section */
         #registration-section h1 {
-            background: #1182fa; /* Teal background for the header */
-            color: white; /* White text color */
-            padding: 20px;
-            text-align: center;
-            margin: 0;
-            border-radius: 10px 10px 0 0; /* Rounded corners for top left and right */
+        text-align: center;
+        background: #1182fa;;
+        color: #fff;
+        padding: 10px 0;
+        margin: 0;
+           
         }
 
         .table-responsive {
@@ -66,6 +65,8 @@ if (!$result) {
         .registration-table {
             width: 100%;
             border-collapse: collapse;
+            position: relative;
+            top: -20px;
             background-color: #ccc;
         }
 
@@ -128,6 +129,8 @@ if (!$result) {
         form {
     margin-bottom: 20px;
     text-align: right;
+    position: relative;
+    top: 10px;
 }
 
 input[type="text"] {
@@ -156,19 +159,21 @@ button:hover {
 <section id="registration-section">
     <div class="container">
         <h1>Registration</h1>
-        <form method="GET" action="registration.php">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <form method="GET" action="dashboard.php">
+        <input type="hidden" name="page" value="registration">
             <input type="text" name="search" placeholder="Search by first name..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
             <button type="submit">Search</button>
         </form>
         <div class="table-responsive">
             <table class="registration-table">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>ID Picture</th>
-                        <th>First Name</th>
-                        <th>Info</th>
-                    </tr>
+                <tr>
+                <th><i class="fas fa-id-badge"></i> ID</th>
+                <th><i class="fas fa-image"></i> ID Picture</th>
+                <th><i class="fas fa-user"></i> First Name</th>
+                <th><i class="fas fa-info-circle"></i> Info</th>
+               </tr>
                 </thead>
                 <tbody>
                 <?php

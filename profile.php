@@ -120,6 +120,8 @@ form {
     display: flex;
     justify-content: right;
     margin-bottom: 20px;
+    position: relative;
+    top: 10px;
 }
 
 form input[type="text"] {
@@ -184,24 +186,26 @@ form input[type="text"]:focus {
 
 <section id="profile-section">
     <h1>Profile</h1>
-
-    <!-- Search Form -->
-    <form method="GET" action="profile.php" style="margin-bottom: 20px;">
-        <input type="text" name="search" placeholder="Search by name or course" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-        <button type="submit">Search</button>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <form method="GET" action="dashboard.php" style="margin-bottom: 20px;">
+    <input type="hidden" name="page" value="profile">
+    <input type="text" name="search" placeholder="Search by name or course" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+    <button type="submit">Search</button>
     </form>
+
 
     <!-- Profile Table -->
     <table class="profile-table">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>NAME</th>
-                <th>COURSE</th>
-                <th>STATUS</th>
-                <th>EDIT</th>
-                <th>DELETE</th>
-            </tr>
+        <tr>
+        <th><i class="fas fa-id-badge"></i> ID</th>
+        <th><i class="fas fa-user"></i> NAME</th>
+        <th><i class="fas fa-book-open"></i> COURSE</th>
+        <th><i class="fas fa-info-circle"></i> STATUS</th>
+        <th><i class="fas fa-edit"></i> EDIT</th>
+        <th><i class="fas fa-trash-alt"></i> DELETE</th>
+        </tr>
+
         </thead>
         <tbody>
             <?php

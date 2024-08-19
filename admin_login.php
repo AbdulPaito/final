@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = $_POST['password']; // Use plain text password for comparison
 
         // Prepared SQL query to prevent SQL injection
-        $query = "SELECT id, password FROM admins WHERE username = ?";
+        $query = "SELECT id, password_admin FROM admins WHERE username_admin = ?";
         $stmt = $conn->prepare($query);
         if ($stmt === false) {
             die("Prepare failed: " . $conn->error);
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user = $result->fetch_assoc();
 
             // Directly compare plain text passwords
-            if ($password === $user['password']) {
+            if ($password === $user['password_admin']) {
                 // Set session variables and redirect to the admin dashboard
                 $_SESSION['admin_id'] = $user['id']; // Set session variable for admin
                 $_SESSION['username'] = $username; // Store username in session
@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

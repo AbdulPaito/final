@@ -17,20 +17,23 @@ if (!$result) {
 
 <section id="settings-section">
     <h1>Settings</h1>
-    <form method="GET" action="settings.php">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <form method="GET" action="dashboard.php">
+    <input type="hidden" name="page" value="settings">
         <input type="text" name="search" placeholder="Search by username or email..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
         <button type="submit">Search</button>
     </form>
     <table class="settings-table">
         <thead>
-            <tr>
-                <th>#</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Email</th>
-                <th>Edit</th>
-                <th>Delete</th>
+        <tr>
+                <th><i class="fas fa-id-badge"></i> ID</th>
+                <th><i class="fas fa-user"></i> Username</th>
+                <th><i class="fas fa-key"></i> Password</th>
+                <th><i class="fas fa-envelope"></i> Email</th>
+                <th><i class="fas fa-edit"></i> Edit</th>
+                <th><i class="fas fa-trash-alt"></i> Delete</th>
             </tr>
+
         </thead>
         <tbody>
             <?php
@@ -40,7 +43,8 @@ if (!$result) {
                 <tr>
                     <td><?php echo $counter++; ?></td>
                     <td><?php echo htmlspecialchars($row['username']); ?></td>
-                    <td><?php echo htmlspecialchars($row['password']); ?></td>
+                    <td><input type="password" value="<?php echo htmlspecialchars($row['password']); ?>" id="password-<?php echo $row['id']; ?>" class="password-field" readonly>
+                    <i class="fas fa-eye" onclick="togglePassword(<?php echo $row['id']; ?>)" style="cursor: pointer;"></i></td>
                     <td><?php echo htmlspecialchars($row['email']); ?></td>
                     <td><a class="edit-button" href="edit.php?id=<?php echo $row['id']; ?>">Edit</a></td>
                     <td><a class="delete-button" href="delete.php?id=<?php echo $row['id']; ?>">Delete</a></td>
@@ -137,6 +141,8 @@ form {
     display: flex;
     justify-content: right;
     margin-bottom: 20px;
+    position: relative;
+    top: 10px;
 }
 
 form input[type="text"] {
@@ -173,4 +179,44 @@ form input[type="text"]:focus {
     border-color: #007bff;
     outline: none;
 }
+
+.password-field {
+    border: none;
+    background: transparent;
+    font-size: 1em;
+    width: auto;
+    text-align: center;
+    font-family: inherit;
+    margin-right: 5px;
+}
+
+.password-field:focus {
+    outline: none;
+}
+
+td i {
+    color: black;
+}
+
+td i:hover {
+    color: #0056b3;
+}
+
 </style>
+
+<script>
+function togglePassword(id) {
+    var passwordField = document.getElementById('password-' + id);
+    var eyeIcon = passwordField.nextElementSibling;
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+</script>

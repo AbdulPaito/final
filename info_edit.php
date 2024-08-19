@@ -147,9 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 520px;
     max-width: 1000px;
-    height: 1790px;
+    height: 1890px;
     position: relative;
-    margin-top: 880px;
+    margin-top: 1300px;
 }
 
 .form-container h2 {
